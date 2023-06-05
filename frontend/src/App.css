@@ -1,0 +1,17 @@
+.url-inputs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 750px;
+}
+
+.url-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.betting-lines {
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+}
