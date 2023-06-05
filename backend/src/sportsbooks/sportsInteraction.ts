@@ -1,23 +1,22 @@
 import { Page } from 'puppeteer';
 import { mkdirSync } from 'fs';
 
-export async function parsePage(page: Page) {
+export async function parsePage(page: Page): Promise<Record<string, string>> {
+  const bettingLines: Record<string, string> = {};
+
   try {
     await page.waitForSelector('div.Tabs__content div[data-test="main"]');
   } catch {
-    return {};
+    return bettingLines;
   }
   
   mkdirSync(`${__dirname}/../../lines/sportsInteraction/`, { recursive: true });
   await page.screenshot({ path: `${__dirname}/../../lines/sportsInteraction/all.png`, fullPage: true });
-  const bettingLines: Record<string, string> = { all: 'sportsInteraction/all.png' };
-
-  const oddsHandle = await page.$('div.Tabs__content div[data-test="main"]');
-  if (oddsHandle) await oddsHandle.screenshot({ path: 'screenshot.png' });
+  bettingLines.all = 'sportsInteraction/all.png';
 
   const elementHandles = await page.$$('div.Tabs__content div[data-test="main"] li.LiveBettingEvents__betType');
   if (!elementHandles.length) {
-    return;
+    bettingLines;
   }
 
   for (const [ i, handle ] of elementHandles.entries()) {
@@ -26,7 +25,7 @@ export async function parsePage(page: Page) {
       continue;
     }
 
-    const path = `sportsInteraction/${i}.png`
+    const path = `sportsInteraction/${i}.png`;
     await handle.screenshot({ path: `${__dirname}/../../lines/${path}` });
 
     bettingLines[heading] = path;

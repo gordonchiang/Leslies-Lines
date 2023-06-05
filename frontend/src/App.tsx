@@ -11,6 +11,7 @@ export const App = () => {
   const [ playNowUrl, setPlayNowUrl ] = useState<string>('');
   const [ sportsinteractionUrl, setSportsinteractionUrl ] = useState<string>('');
 
+  const [ playNowBettingLines, setPlayNowBettingLines ] = useState<any>([]);
   const [ sportsInteractionBettingLines, setSportsInteractionBettingLines ] = useState<any>([]);
 
   const loadBettingLines = async (type: BettingSite, url: string) => {
@@ -21,19 +22,25 @@ export const App = () => {
 
     try {
       let resp;
+      let elements = [];
       switch (type) {
         case 'fanduel':
           resp = await axios.get('http://localhost:4200/scrape', { params: { type, url }});
           console.log(resp.data)
           break;
         case 'playNow':
-          console.debug('TODO');
+          resp = await axios.get('http://localhost:4200/scrape', { params: { type, url }});
+
+          for (const [ line, img ] of Object.entries(resp.data)) {
+            if (line !== 'all') elements.push(<img src={ `http://localhost:4200/lines/${img}` }/>);
+          }
+          
+          setPlayNowBettingLines(elements);
+
           break;
         case 'sportsInteraction':
           resp = await axios.get('http://localhost:4200/scrape', { params: { type, url }});
-          console.log(resp.data)
 
-          const elements = [];
           for (const [ line, img ] of Object.entries(resp.data)) {
             if (line !== 'all') elements.push(<img src={ `http://localhost:4200/lines/${img}` }/>);
           }
@@ -71,7 +78,10 @@ export const App = () => {
             onChange={ (e) => setPlayNowUrl(e.target.value) }
           ></input>
           <button
-            onClick={ () => loadBettingLines('playNow', playNowUrl) }
+            onClick={ () => {
+              setPlayNowBettingLines([]);
+              loadBettingLines('playNow', playNowUrl);
+            } }
           >Go</button>
         </div>
         <div className='url-input'>
@@ -91,7 +101,12 @@ export const App = () => {
       </div>
 
       <div className='betting-lines'>
-        { sportsInteractionBettingLines }
+        <div className='betting-line'>
+          { playNowBettingLines }
+        </div>
+        <div>
+          { sportsInteractionBettingLines }
+        </div>
       </div>
     </div>
   );

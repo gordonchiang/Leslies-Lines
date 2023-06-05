@@ -6,6 +6,7 @@ import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { BettingSite } from './src/types';
 import * as sportsInteraction from './src/sportsbooks/sportsInteraction';
+import * as playNow from './src/sportsbooks/playNow';
 
 const port = process.env.PORT ?? 4200;
 
@@ -29,7 +30,21 @@ app.get('/scrape', async (req: Request, res: Response) => {
   .then(async (browser: Browser) => {
     const page: Page = await browser.newPage();
     await page.goto(url);
-    const resp = await sportsInteraction.parsePage(page);
+
+    let resp: Record<string, string>;
+    switch (type) {
+      case 'sportsInteraction':
+        resp = await sportsInteraction.parsePage(page);
+        break;
+      case 'playNow':
+        resp = await playNow.parsePage(page);
+        break;
+      case 'fanduel':
+      default:
+        resp = {};
+
+    }
+
     await browser.close();
 
     res.send(JSON.stringify(resp));

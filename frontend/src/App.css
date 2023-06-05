@@ -12,6 +12,11 @@
 
 .betting-lines {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 33%;
+;}
+
+.betting-line {
+  display: flex;
+  flex-direction: column;
 }
