@@ -11,15 +11,11 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
   bettingLines.all = 'playNow/all.png';
 
   const elementHandles = await page.$$('div.event-markets div.event-panel');
-  if (!elementHandles.length) {
-    bettingLines;
-  }
+  if (!elementHandles.length) return bettingLines;
 
   for (const [ i, handle ] of elementHandles.entries()) {
     const heading = await handle.$eval('div.event-panel__heading__market-name', element => element.textContent);
-    if (heading === null) {
-      continue;
-    }
+    if (heading === null) continue;
 
     const path = `playNow/${i}.png`;
     await handle.screenshot({ path: `${__dirname}/../../lines/${path}` });

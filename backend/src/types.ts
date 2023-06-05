@@ -1,1 +1,1 @@
-export type BettingSite = 'fanduel' | 'playNow' | 'sportsInteraction';
+export type BettingSite = 'fanDuel' | 'playNow' | 'sportsInteraction';

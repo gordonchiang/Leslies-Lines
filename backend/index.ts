@@ -7,6 +7,7 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { BettingSite } from './src/types';
 import * as sportsInteraction from './src/sportsbooks/sportsInteraction';
 import * as playNow from './src/sportsbooks/playNow';
+import * as fanDuel from './src/sportsbooks/fanDuel';
 
 const port = process.env.PORT ?? 4200;
 
@@ -15,20 +16,20 @@ rmSync(`${__dirname}/lines/`, { recursive: true, force: true });
 const app: Express = express();
 app.use(cors<Request>());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('hello world');
-});
-
 app.get('/scrape', async (req: Request, res: Response) => {
   const type: BettingSite = req.query.type as BettingSite;
   const url: string = req.query.url as string;
   console.log(type, url);
 
-  puppeteer
-  .use(StealthPlugin()) // Add stealth plugin and use defaults (all evasion techniques)
-  .launch({ headless: 'new', executablePath: executablePath() })
-  .then(async (browser: Browser) => {
+  puppeteer.use(
+    StealthPlugin() // Add stealth plugin and use defaults (all evasion techniques)
+  ).launch({
+    headless: 'new',
+    executablePath: executablePath()
+  }).then(async (browser: Browser) => {
     const page: Page = await browser.newPage();
+    await page.setViewport({ width: 1920, height: 1080 });
+    await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
     await page.goto(url);
 
     let resp: Record<string, string>;
@@ -39,12 +40,14 @@ app.get('/scrape', async (req: Request, res: Response) => {
       case 'playNow':
         resp = await playNow.parsePage(page);
         break;
-      case 'fanduel':
+      case 'fanDuel':
+        resp = await fanDuel.parsePage(page);
+        break;
       default:
         resp = {};
-
     }
 
+    await page.close();
     await browser.close();
 
     res.send(JSON.stringify(resp));
