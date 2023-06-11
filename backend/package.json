@@ -1,13 +1,11 @@
 {
   "name": "leslies-lines-be",
   "version": "0.0.1",
-  "description": "",
+  "private": true,
   "main": "index.ts",
   "scripts": {
     "start": "npx tsc && node dist/index.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
