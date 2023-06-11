@@ -12,7 +12,7 @@ export const App = () => {
 
   const [ initialTimer, setInitialTimer ] = useState<number>(60);
   const [ timer, setTimer ] = useState<number>(initialTimer);
-  const [ pauseTimer, setPauseTimer ] = useState<boolean>(false);
+  const [ pauseTimer, setPauseTimer ] = useState<boolean>(true);
 
   const [ fanDuelBettingLines, setFanDuelBettingLines ] = useState<any>([]);
   const [ playNowBettingLines, setPlayNowBettingLines ] = useState<any>([]);
