@@ -5,9 +5,8 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
   const bettingLines: Record<string, string> = {};
 
   try {
+    await selectAmericanOdds(page);
     await page.waitForSelector('div.Tabs__content div[data-test="main"]');
-    const oddsInHandle = await page.$('select.hidden-select');
-    await oddsInHandle?.select('4');
   } catch {
     return bettingLines;
   }
@@ -30,4 +29,14 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
   }
 
   return bettingLines;
+}
+
+async function selectAmericanOdds(page: Page): Promise<void> {
+  await page.waitForSelector('footer.Footer select.hidden-select');
+  const americanOdds = await page.$$eval(
+    'footer.Footer select.hidden-select option',
+    options => options.find(o => o.innerText.includes('American'))?.value
+  ) ?? '4'; // 4 is the option value for American odds
+  await page.select('footer.Footer select.hidden-select', americanOdds);
+  await new Promise(r => setTimeout(r, 1000));
 }

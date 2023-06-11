@@ -19,7 +19,7 @@ export const App = () => {
   const [ sportsInteractionBettingLines, setSportsInteractionBettingLines ] = useState<any>([]);
 
   const reloadBettingLines = useCallback(async (): Promise<void> => {
-    console.log('reload')
+    console.log('reload');
   }, []);
 
   useEffect(() => {
@@ -28,9 +28,7 @@ export const App = () => {
     const newTimer = timer-1;
     const tick = setInterval(setTimer, 1000, newTimer === -1 ? initialTimer : newTimer);
 
-    const triggerReload = async () => {
-      await reloadBettingLines();
-    };
+    const triggerReload = async () => await reloadBettingLines();
     if (newTimer === -1) triggerReload();
   
     return () => clearInterval(tick);
@@ -66,7 +64,7 @@ export const App = () => {
           break;
       }
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   };
 
@@ -134,10 +132,12 @@ export const App = () => {
           <button onClick={ () => setPauseTimer(!pauseTimer) }>
             { `${pauseTimer ? 'Enable' : 'Disable' } Automatic Refresh` }
           </button>
-          <button onClick={ async () => {
-            setTimer(initialTimer);
-            await reloadBettingLines();
-           } }>
+          <button
+            onClick={ async () => {
+              setTimer(initialTimer);
+              await reloadBettingLines();
+            } }
+          >
             Reload All Betting Lines
           </button>
         </div>
