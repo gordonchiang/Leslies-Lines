@@ -19,8 +19,14 @@ export const App = () => {
   const [ sportsInteractionBettingLines, setSportsInteractionBettingLines ] = useState<any>([]);
 
   const reloadBettingLines = useCallback(async (): Promise<void> => {
-    console.log('reload');
-  }, []);
+    setFanDuelBettingLines([]);
+    setPlayNowBettingLines([]);
+    setSportsInteractionBettingLines([]);
+
+    loadBettingLines('fanDuel', fanDuelUrl);
+    loadBettingLines('playNow', playNowUrl);
+    loadBettingLines('sportsInteraction', sportsinteractionUrl);
+  }, [ fanDuelUrl, playNowUrl, sportsinteractionUrl ]);
 
   useEffect(() => {
     if (pauseTimer) return;
