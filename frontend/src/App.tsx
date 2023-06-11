@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import { isValidHttpUrl } from './util/http';
-
-export type BettingSite = 'fanDuel' | 'playNow' | 'sportsInteraction';
+import { BettingSite } from './types';
 
 export const App = () => {
   const [ fanDuelUrl, setFanDuelUrl ] = useState<string>('');
@@ -17,6 +16,13 @@ export const App = () => {
   const [ fanDuelBettingLines, setFanDuelBettingLines ] = useState<any>([]);
   const [ playNowBettingLines, setPlayNowBettingLines ] = useState<any>([]);
   const [ sportsInteractionBettingLines, setSportsInteractionBettingLines ] = useState<any>([]);
+
+  window.addEventListener('beforeunload', event => {
+    if (fanDuelUrl || playNowUrl || sportsinteractionUrl) {
+      event.preventDefault();
+      return event.returnValue = '';
+    }
+  });
 
   const reloadBettingLines = useCallback(async (): Promise<void> => {
     setFanDuelBettingLines([]);
@@ -47,41 +53,43 @@ export const App = () => {
     }
 
     try {
-      const resp = await axios.get('http://localhost:4200/scrape', { params: { type, url }});
-      const elements = Object.entries(resp.data).reduce<JSX.Element[]>((arr, [line, img]) => {
+      const resp = await axios.get('http://localhost:3001/scrape', { params: { type, url }});
+      const bettingLines = Object.entries(resp.data).reduce<JSX.Element[]>((arr, [line, img]) => {
         return line === 'all' ? arr : arr.concat(<img
           id={ `${line}${img}` }
           alt='betting-line'
-          src={ `http://localhost:4200/lines/${img}` }
+          src={ `http://localhost:3001/lines/${img}` }
         />);
       }, []);
  
       switch (type) {
         case 'fanDuel':
-          setFanDuelBettingLines(elements);
+          setFanDuelBettingLines(bettingLines);
           break;
         case 'playNow':
-          setPlayNowBettingLines(elements);
+          setPlayNowBettingLines(bettingLines);
           break;
         case 'sportsInteraction':
-          setSportsInteractionBettingLines(elements);
+          setSportsInteractionBettingLines(bettingLines);
           break;
         default:
           break;
       }
     } catch (e) {
       console.log(e);
+      alert(`Error scraping '${url}'; try again`);
     }
   };
 
   return (
     <div>
-      <h1>Betting Odds</h1>
+      <h1>Leslie's Lines</h1>
+
       <div className='url-inputs'>
         <div className='url-input'>
-          <a href='https://www.fanduel.com/'>FanDuel</a>
+          <a href='https://sportsbook.fanduel.com/' target='_blank' rel='noreferrer'>FanDuel</a>
           <input
-            placeholder='https://www.fanduel.com/'
+            placeholder='https://sportsbook.fanduel.com/'
             value={ fanDuelUrl }
             onChange={ (e) => setFanDuelUrl(e.target.value) }
           ></input>
@@ -93,9 +101,9 @@ export const App = () => {
           >Go</button>
         </div>
         <div className='url-input'>
-          <a href='https://www.playnow.com/'>PlayNow</a>
+          <a href='https://www.playnow.com/sports/' target='_blank' rel='noreferrer'>PlayNow</a>
           <input
-            placeholder='https://www.playnow.com/'
+            placeholder='https://www.playnow.com/sports/'
             value={ playNowUrl }
             onChange={ (e) => setPlayNowUrl(e.target.value) }
           ></input>
@@ -107,7 +115,7 @@ export const App = () => {
           >Go</button>
         </div>
         <div className='url-input'>
-          <a href='https://www.sportsinteraction.com/'>Sports Interaction</a>
+          <a href='https://www.sportsinteraction.com/' target='_blank' rel='noreferrer'>Sports Interaction</a>
           <input
             placeholder='https://www.sportsinteraction.com/'
             value={ sportsinteractionUrl }
@@ -143,9 +151,7 @@ export const App = () => {
               setTimer(initialTimer);
               await reloadBettingLines();
             } }
-          >
-            Reload All Betting Lines
-          </button>
+          >Reload All Betting Lines</button>
         </div>
       </div>
 

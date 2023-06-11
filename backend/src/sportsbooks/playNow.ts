@@ -1,5 +1,5 @@
-import { ElementHandle, Page } from 'puppeteer';
 import { mkdirSync } from 'fs';
+import { ElementHandle, Page } from 'puppeteer';
 
 export async function parsePage(page: Page): Promise<Record<string, string>> {
   const bettingLines: Record<string, string> = {};

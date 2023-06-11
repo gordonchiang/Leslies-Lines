@@ -1,5 +1,5 @@
-import { ElementHandle, Page } from 'puppeteer';
 import { mkdirSync } from 'fs';
+import { Page } from 'puppeteer';
 
 export async function parsePage(page: Page): Promise<Record<string, string>> {
   const bettingLines: Record<string, string> = {};
@@ -24,6 +24,7 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
       return heading;
     });
     if (heading === null) continue;
+
     await handle.$$eval('span', elements => {
       elements.map(e => {
         if (e.textContent?.includes('Show more')) e.click();

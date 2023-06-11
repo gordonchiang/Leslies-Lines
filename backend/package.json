@@ -7,7 +7,6 @@
     "start": "npx tsc && node dist/index.js"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "puppeteer": "^20.2.1",
