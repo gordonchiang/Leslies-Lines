@@ -1,10 +1,14 @@
-import { Page } from 'puppeteer';
+import { ElementHandle, Page } from 'puppeteer';
 import { mkdirSync } from 'fs';
 
 export async function parsePage(page: Page): Promise<Record<string, string>> {
   const bettingLines: Record<string, string> = {};
 
-  await page.waitForNavigation({ waitUntil: 'networkidle0' });
+  try {
+    await page.waitForSelector('div.event-markets div.event-panel');
+  } catch {
+    return bettingLines;
+  }
   
   mkdirSync(`${__dirname}/../../lines/playNow/`, { recursive: true });
   await page.screenshot({ path: `${__dirname}/../../lines/playNow/all.png`, fullPage: true });
@@ -17,6 +21,8 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
     const heading = await handle.$eval('div.event-panel__heading__market-name', element => element.textContent);
     if (heading === null) continue;
 
+    await expandCollapsedBettingLine(handle);
+
     const path = `playNow/${i}.png`;
     await handle.screenshot({ path: `${__dirname}/../../lines/${path}` });
 
@@ -24,4 +30,9 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
   }
 
   return bettingLines;
+}
+
+async function expandCollapsedBettingLine(handle: ElementHandle<HTMLDivElement>): Promise<void> {
+  const collapsedHandle = await handle.$('span.collapsed');
+  await collapsedHandle?.evaluate(element => element.click());
 }
