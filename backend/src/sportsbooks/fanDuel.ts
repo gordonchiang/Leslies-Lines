@@ -31,7 +31,7 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
     });
  
     const path = `fanDuel/${i}.png`;
-    await handle.screenshot();
+    await handle.screenshot({ path: `${__dirname}/../../lines/${path}` });
 
     bettingLines[heading] = path;
   }
