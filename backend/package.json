@@ -4,6 +4,7 @@
   "private": true,
   "main": "index.ts",
   "scripts": {
+    "build": "npx tsc",
     "start": "npx tsc && node dist/index.js"
   },
   "dependencies": {
