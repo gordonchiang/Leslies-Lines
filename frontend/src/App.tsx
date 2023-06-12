@@ -52,13 +52,15 @@ export const App = () => {
       return;
     }
 
+    const backendFrontdoor = process.env.NODE_ENV === 'production' ? process.env.BACKEND_FRONTDOOR : 'http://localhost:3001';
+
     try {
-      const resp = await axios.get('http://localhost:3001/scrape', { params: { type, url }});
+      const resp = await axios.get(`${backendFrontdoor}/scrape`, { params: { type, url }});
       const bettingLines = Object.entries(resp.data).reduce<JSX.Element[]>((arr, [line, img]) => {
         return line === 'all' ? arr : arr.concat(<img
           id={ `${line}${img}` }
           alt='betting-line'
-          src={ `http://localhost:3001/lines/${img}` }
+          src={ `${backendFrontdoor}/lines/${img}` }
         />);
       }, []);
  

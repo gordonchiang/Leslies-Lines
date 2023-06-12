@@ -34,7 +34,7 @@ app.get('/scrape', async (req: Request, res: Response) => {
     StealthPlugin()
   ).launch({
     headless: 'new',
-    executablePath: executablePath()
+    executablePath: process.env.NODE_ENV === 'production' ? process.env.PUPPETEER_EXECUTABLE_PATH : executablePath()
   }).then(async (browser: Browser) => {
     const page = await browser.newPage();
     await page.setViewport({ width: 7680, height: 4320 });
