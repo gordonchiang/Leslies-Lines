@@ -28,7 +28,7 @@ app.use((_, res, next) => {
 app.get('/scrape', async (req: Request, res: Response) => {
   const type: BettingSite = req.query.type as BettingSite;
   const url: string = req.query.url as string;
-  console.log(`[LOG] Scraping ${type}: ${url}`);
+  console.log(`[LOG] Scraping ${type}`);
 
   puppeteer.use(
     StealthPlugin()
@@ -40,6 +40,7 @@ app.get('/scrape', async (req: Request, res: Response) => {
     const page = await browser.newPage();
     await page.setViewport({ width: 7680, height: 4320 });
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+    console.log(`[LOG] Going to ${url}`);
     await page.goto(url);
 
     let resp: Record<string, string>;
