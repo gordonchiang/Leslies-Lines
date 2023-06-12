@@ -41,7 +41,7 @@ app.get('/scrape', async (req: Request, res: Response) => {
     await page.setViewport({ width: 7680, height: 4320 });
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
     console.log(`[LOG] Going to ${url}`);
-    await page.goto(url, { waitUntil: 'load' });
+    await page.goto(url, { timeout: 0 });
 
     let resp: Record<string, string>;
     try {
