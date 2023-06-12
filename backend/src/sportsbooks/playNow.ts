@@ -23,6 +23,12 @@ export async function parsePage(page: Page): Promise<Record<string, string>> {
 
     await expandCollapsedBettingLine(handle);
 
+    await handle.$$eval('a', elements => {
+      elements.map(e => {
+        if (e.textContent?.includes('Show more')) e.click();
+      })
+    });
+
     const path = `playNow/${i}.png`;
     await handle.screenshot({ path: `${__dirname}/../../lines/${path}` });
 
