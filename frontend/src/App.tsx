@@ -52,7 +52,7 @@ export const App = () => {
       return;
     }
 
-    const backendFrontdoor = process.env.NODE_ENV === 'production' ? process.env.BACKEND_FRONTDOOR : 'http://localhost:3001';
+    const backendFrontdoor = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_BACKEND_FRONTDOOR : 'http://localhost:3001';
 
     try {
       const resp = await axios.get(`${backendFrontdoor}/scrape`, { params: { type, url }});
