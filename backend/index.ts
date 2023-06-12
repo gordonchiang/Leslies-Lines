@@ -45,6 +45,7 @@ app.get('/scrape', async (req: Request, res: Response) => {
 
     let resp: Record<string, string>;
     try {
+      console.log('[LOG] Parsing page');
       switch (type) {
         case 'sportsInteraction':
           resp = await sportsInteraction.parsePage(page);
